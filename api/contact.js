@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, email, subject, message } = req.body || {};
+    const { name, email, phone, subject, message } = req.body || {};
 
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, error: 'Missing required fields' });
@@ -33,13 +33,18 @@ export default async function handler(req, res) {
           <div style="padding: 24px; color: #1e293b;">
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
               <tr>
-                <td style="padding: 8px 0; font-weight: bold; width: 100px; color: #64748b;">Sender:</td>
+                <td style="padding: 8px 0; font-weight: bold; width: 120px; color: #64748b;">Sender:</td>
                 <td style="padding: 8px 0; color: #0f172a; font-size: 15px;"><strong>${name}</strong></td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #64748b;">Email:</td>
                 <td style="padding: 8px 0; color: #2563eb;"><a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a></td>
               </tr>
+              ${phone ? `
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #64748b;">Mobile / Phone:</td>
+                <td style="padding: 8px 0; color: #0f172a;"><a href="tel:${phone}" style="color: #0f172a; text-decoration: none; font-weight: bold;">${phone}</a></td>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #64748b;">Subject:</td>
                 <td style="padding: 8px 0; color: #0f172a;">${subject || 'General Inquiry'}</td>

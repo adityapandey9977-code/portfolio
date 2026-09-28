@@ -17,6 +17,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: '',
   });
@@ -40,6 +41,13 @@ export default function Contact() {
       errs.email = 'Email address is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       errs.email = 'Please provide a valid email address';
+    }
+
+    if (formData.phone && formData.phone.trim()) {
+      const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{6,15}$/;
+      if (!phoneRegex.test(formData.phone.trim())) {
+        errs.phone = 'Please enter a valid phone/mobile number';
+      }
     }
 
     if (!formData.subject.trim()) {
@@ -113,7 +121,7 @@ export default function Contact() {
   };
 
   const handleReset = () => {
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     setSubmitStatus(null);
     setServerError(null);
     setErrors({});
@@ -384,6 +392,35 @@ export default function Contact() {
                         </p>
                       )}
                     </div>
+                  </div>
+
+                  {/* Phone / Mobile Field */}
+                  <div>
+                    <label 
+                      htmlFor="phone" 
+                      className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                    >
+                      Phone / Mobile Number <span className="text-slate-400 font-normal lowercase text-[11px]">(optional / for quick callback)</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="+91 99777 79341"
+                      className={`w-full px-4 py-2.5 text-sm bg-white rounded-xl border transition-colors outline-none ${
+                        errors.phone
+                          ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-100'
+                          : 'border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+                      }`}
+                    />
+                    {errors.phone && (
+                      <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>{errors.phone}</span>
+                      </p>
+                    )}
                   </div>
 
                   {/* Subject Field */}
