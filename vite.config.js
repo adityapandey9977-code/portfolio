@@ -1,12 +1,104 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react';
+import { defineConfig, loadEnv } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import nodemailer from 'nodemailer';
+
+function contactApiPlugin() {
+  return {
+    name: 'contact-api-plugin',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url === '/api/contact' && req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', async () => {
+            try {
+              const { name, email, subject, message } = JSON.parse(body || '{}');
+
+              if (!name || !email || !message) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ success: false, error: 'Missing required fields' }));
+                return;
+              }
+
+              const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: process.env.EMAIL_USER || 'adityapandey9977@gmail.com',
+                  pass: process.env.EMAIL_PASS || 'upjtwnpztygjtkxu',
+                },
+              });
+
+              const mailOptions = {
+                from: `"Portfolio Contact Form" <${process.env.EMAIL_USER || 'adityapandey9977@gmail.com'}>`,
+                to: 'adityapandey9977@gmail.com',
+                replyTo: `${name} <${email}>`,
+                subject: `[Portfolio Inquiry] ${subject || 'New Message from Portfolio'}`,
+                html: `
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+                    <div style="background-color: #0b1329; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
+                      <h2 style="color: #ffffff; margin: 0; font-size: 20px;">New Message from Portfolio</h2>
+                    </div>
+                    <div style="padding: 24px; color: #1e293b;">
+                      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <tr>
+                          <td style="padding: 8px 0; font-weight: bold; width: 100px; color: #64748b;">Sender:</td>
+                          <td style="padding: 8px 0; color: #0f172a; font-size: 15px;"><strong>${name}</strong></td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; font-weight: bold; color: #64748b;">Email:</td>
+                          <td style="padding: 8px 0; color: #2563eb;"><a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a></td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; font-weight: bold; color: #64748b;">Subject:</td>
+                          <td style="padding: 8px 0; color: #0f172a;">${subject || 'General Inquiry'}</td>
+                        </tr>
+                      </table>
+                      <div style="background-color: #f8fafc; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 4px; margin-top: 10px;">
+                        <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+                      </div>
+                    </div>
+                    <div style="padding: 16px 24px; background-color: #f1f5f9; border-radius: 0 0 8px 8px; font-size: 12px; color: #64748b; text-align: center;">
+                      Received via Aditya Pandey's Portfolio Website Contact Form
+                    </div>
+                  </div>
+                `,
+              };
+
+              await transporter.sendMail(mailOptions);
+
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: true, message: 'Email sent successfully!' }));
+            } catch (err) {
+              console.error('Error sending email via Nodemailer:', err);
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: false, error: err.message || 'Failed to send email' }));
+            }
+          });
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
-})
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  process.env.EMAIL_USER = env.EMAIL_USER || 'adityapandey9977@gmail.com';
+  process.env.EMAIL_PASS = env.EMAIL_PASS || 'upjtwnpztygjtkxu';
 
+  return {
+    plugins: [
+      react(),
+      tailwindcss(),
+      contactApiPlugin(),
+    ],
+  };
+});

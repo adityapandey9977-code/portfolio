@@ -6,6 +6,7 @@ import {
   Code2, 
   MapPin, 
   Mail, 
+  Phone,
   Sparkles
 } from 'lucide-react';
 import { personalInfo } from '../data/personalInfo';
@@ -15,6 +16,8 @@ export default function About() {
     switch (iconName) {
       case 'User':
         return <User className="w-5 h-5 text-blue-600" />;
+      case 'Phone':
+        return <Phone className="w-5 h-5 text-blue-600" />;
       case 'GraduationCap':
         return <GraduationCap className="w-5 h-5 text-blue-600" />;
       case 'Briefcase':
@@ -54,11 +57,20 @@ export default function About() {
             </p>
 
             {/* Quick Contact & Status Chips matching reference image */}
-            <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-slate-600">
+            <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-slate-600">
               <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/70">
                 <MapPin className="w-4 h-4 text-blue-500" />
                 <span className="font-medium text-slate-700">{personalInfo.location}</span>
               </div>
+
+              <a
+                href={personalInfo.socialLinks.phone}
+                className="flex items-center gap-2 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 px-3.5 py-2 rounded-xl border border-slate-200/70 transition-colors"
+                title="Call phone number"
+              >
+                <Phone className="w-4 h-4 text-emerald-500" />
+                <span className="font-medium text-slate-700">{personalInfo.phoneDisplay || personalInfo.phone}</span>
+              </a>
 
               <a
                 href="#contact"

@@ -1,21 +1,19 @@
 export const experiences = [
   {
     id: "quest-digiflex",
-    role: "MERN Stack Developer Apprentice",
+    role: "Full Stack Developer Apprentice",
     company: "Quest Digiflex Pvt. Ltd.",
     period: "June 2026 – Present",
     periodShort: "Jun 2026 – Present",
     location: "Indore, India",
     type: "Apprenticeship",
     isCurrent: true,
-    summary: "Developing enterprise SaaS solutions, CMS Studio for Super Admin, and real-time chat integrations within Dockerized monorepo workflows.",
+    summary:
+      "Contributing to multiple production-oriented full-stack SaaS platforms using React.js, Node.js, Express.js, JavaScript, and TypeScript within a microservices architecture.",
     responsibilities: [
-      "Developed the CMS Studio for the Super Admin, handling design, implementation, and development end-to-end",
-      "Worked on ORM-based data modeling and integration (MySQL, PostgreSQL, Prisma, MongoDB) to streamline backend data operations",
-      "Implemented Socket.IO for real-time chat functionality",
-      "Hands-on experience with Docker, monorepo structure, and microservice components in SaaS projects",
-      "Gained hands-on experience working in an Agile team environment, using ClickUp for project management",
-      "Used Git and GitHub on a daily basis for version control and collaborative development",
+      "Contributed to multiple production-oriented full-stack SaaS platforms using React.js, Node.js, Express.js, JavaScript, and TypeScript.",
+      "Built full-stack features across web and mobile apps with relational database integration (PostgreSQL, MySQL), ORM-based data modeling (Prisma, Knex.js), and a microservices architecture using Docker, Redis, and RabbitMQ.",
+      "Developed a custom CMS Studio for Super Admin content/configuration management and implemented real-time features using Socket.IO, while collaborating in an Agile team using ClickUp, Git, and GitHub.",
     ],
   },
   {
@@ -27,13 +25,12 @@ export const experiences = [
     location: "Indore, India",
     type: "Internship",
     isCurrent: false,
-    summary: "Designed and developed scalable RESTful APIs, optimized MongoDB schemas, and integrated dynamic React frontends.",
+    summary:
+      "Designed and developed scalable RESTful APIs, optimized MongoDB schemas, and integrated dynamic React frontends.",
     responsibilities: [
-      "Designed and developed scalable RESTful APIs for authentication, course management, and order processing systems",
-      "Created optimized MongoDB schemas with proper relationships and indexing to improve query performance",
-      "Implemented JWT-based authentication and role-based authorization, securing access to protected routes",
-      "Integrated React.js frontend with backend APIs using Axios, enabling seamless data flow across the application",
-      "Debugged and resolved application issues, improving performance and overall user experience",
+      "Designed and developed scalable RESTful APIs for authentication, course management, and order processing systems.",
+      "Created optimized MongoDB schemas with proper relationships and indexing to improve query performance.",
+      "Implemented JWT-based authentication and role-based authorization, and integrated the React.js frontend with backend APIs using Axios for seamless data flow.",
     ],
   },
 ];

@@ -7,7 +7,11 @@ import {
   Scissors, 
   Layers,
   GraduationCap,
-  Server
+  Server,
+  Headphones,
+  Briefcase,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { projects } from '../data/projects';
 import { personalInfo } from '../data/personalInfo';
@@ -18,9 +22,24 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Pagination state: 6 cards on page 1 (with screenshots), healthcare on page 2
+  const ITEMS_PER_PAGE = 6;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(projects.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const visibleProjects = projects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   const handleOpenDetails = (project) => {
     setActiveProject(project);
     setModalOpen(true);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    const projectsEl = document.getElementById('projects');
+    if (projectsEl) {
+      projectsEl.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const getProjectIcon = (iconName) => {
@@ -37,10 +56,22 @@ export default function Projects() {
             <GraduationCap className="w-5 h-5" />
           </div>
         );
+      case 'Headphones':
+        return (
+          <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 shadow-xs">
+            <Headphones className="w-5 h-5" />
+          </div>
+        );
       case 'Laptop':
         return (
           <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-xs">
             <Laptop className="w-5 h-5" />
+          </div>
+        );
+      case 'Briefcase':
+        return (
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+            <Briefcase className="w-5 h-5" />
           </div>
         );
       case 'Activity':
@@ -90,7 +121,7 @@ export default function Projects() {
 
         {/* 3 cards per row on desktop, 2 on tablet, 1 on mobile */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {projects.map((project) => (
+          {visibleProjects.map((project) => (
             <div
               key={project.id}
               className="group flex flex-col justify-between bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden"
@@ -129,7 +160,7 @@ export default function Projects() {
                   </div>
                   
                   {project.badge && (
-                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
                       {project.badge}
                     </span>
                   )}
@@ -205,6 +236,54 @@ export default function Projects() {
             </div>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-100">
+            <p className="text-xs sm:text-sm text-slate-500 font-medium">
+              Showing <span className="font-semibold text-slate-900">{startIndex + 1}</span> to{' '}
+              <span className="font-semibold text-slate-900">{Math.min(startIndex + ITEMS_PER_PAGE, projects.length)}</span> of{' '}
+              <span className="font-semibold text-slate-900">{projects.length}</span> projects
+            </p>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Previous</span>
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`w-9 h-9 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
+                      currentPage === pageNum
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <span>Next Page</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
 

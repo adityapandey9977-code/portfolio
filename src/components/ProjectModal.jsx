@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ExternalLink, CheckCircle2, Server, Database, Layout } from 'lucide-react';
+import { X, ExternalLink, CheckCircle2, Server, Database, Layout, Sparkles, Cpu } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 
 export default function ProjectModal({ project, isOpen, onClose }) {
@@ -71,9 +71,24 @@ export default function ProjectModal({ project, isOpen, onClose }) {
               Overview
             </h4>
             <p className="text-slate-700 text-sm leading-relaxed">
-              {project.description}
+              {project.overview || project.description}
             </p>
           </div>
+
+          {/* What This Project Demonstrates (if available) */}
+          {project.demonstrates && (
+            <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50/70 border border-blue-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <h4 className="text-xs uppercase font-bold tracking-wider text-blue-900">
+                  What This Project Demonstrates
+                </h4>
+              </div>
+              <p className="text-slate-700 text-xs sm:text-sm leading-relaxed">
+                {project.demonstrates}
+              </p>
+            </div>
+          )}
 
           {/* Tech Stack */}
           <div>
@@ -92,8 +107,48 @@ export default function ProjectModal({ project, isOpen, onClose }) {
             </div>
           </div>
 
-          {/* Highlights */}
-          {project.highlights && project.highlights.length > 0 && (
+          {/* Backend Highlights if present */}
+          {project.backendHighlights && project.backendHighlights.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-2.5">
+                <Cpu className="w-4 h-4 text-blue-600" />
+                <h4 className="text-xs uppercase font-bold tracking-wider text-slate-700">
+                  Backend Architecture & Concurrency Highlights
+                </h4>
+              </div>
+              <ul className="space-y-2.5">
+                {project.backendHighlights.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600">
+                    <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Frontend Highlights if present */}
+          {project.frontendHighlights && project.frontendHighlights.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-2.5">
+                <Layout className="w-4 h-4 text-emerald-600" />
+                <h4 className="text-xs uppercase font-bold tracking-wider text-slate-700">
+                  Frontend & Real-Time UX Highlights
+                </h4>
+              </div>
+              <ul className="space-y-2.5">
+                {project.frontendHighlights.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* General Highlights (when backendHighlights is not explicitly separated) */}
+          {!project.backendHighlights && project.highlights && project.highlights.length > 0 && (
             <div>
               <h4 className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-2.5">
                 Key Architectural Highlights

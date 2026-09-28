@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, ArrowRight, Mail } from 'lucide-react';
+import { Download, ArrowRight, Mail, Phone } from 'lucide-react';
 import { personalInfo } from '../data/personalInfo';
 import HeroIllustration from './HeroIllustration';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
@@ -96,6 +96,15 @@ export default function Hero() {
                 aria-label="LinkedIn Profile"
               >
                 <LinkedinIcon className="w-5 h-5" />
+              </a>
+
+              <a
+                href={personalInfo.socialLinks.phone}
+                className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 border border-slate-800 hover:border-slate-700 transition-all duration-200 cursor-pointer"
+                title={`Call: ${personalInfo.phoneDisplay || personalInfo.phone}`}
+                aria-label="Call Phone"
+              >
+                <Phone className="w-5 h-5" />
               </a>
 
               <a

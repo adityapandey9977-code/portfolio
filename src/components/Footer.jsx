@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, ArrowUp } from 'lucide-react';
+import { Mail, Phone, ArrowUp } from 'lucide-react';
 import { personalInfo } from '../data/personalInfo';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 
@@ -41,7 +41,7 @@ export default function Footer() {
               <span className="text-blue-500">{personalInfo.lastName}</span>
             </a>
             <p className="text-xs text-slate-400 max-w-sm">
-              MERN Stack Developer building modern, responsive, and reliable web applications.
+              {personalInfo.role}
             </p>
           </div>
 
@@ -79,6 +79,15 @@ export default function Footer() {
               aria-label="LinkedIn"
             >
               <LinkedinIcon className="w-5 h-5" />
+            </a>
+
+            <a
+              href={personalInfo.socialLinks.phone}
+              className="p-2 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              title={`Call: ${personalInfo.phoneDisplay || personalInfo.phone}`}
+              aria-label="Phone"
+            >
+              <Phone className="w-5 h-5" />
             </a>
 
             <a

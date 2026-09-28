@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Mail, 
+  Phone,
   MapPin, 
   Send, 
   CheckCircle2, 
@@ -11,7 +12,6 @@ import {
 } from 'lucide-react';
 import { personalInfo } from '../data/personalInfo';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
-
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -24,7 +24,9 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | null
+  const [serverError, setServerError] = useState(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
 
   const validate = () => {
     const errs = {};
@@ -62,19 +64,40 @@ export default function Contact() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
+    if (serverError) {
+      setServerError(null);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setServerError(null);
 
-    // Simulate sending with realistic network latency
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus('success');
+      } else {
+        setServerError(data.error || 'Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      console.error('Contact submission error:', err);
+      setServerError('An unexpected network error occurred. Please try again later.');
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus('success');
-    }, 900);
+    }
   };
 
   const handleCopyEmail = () => {
@@ -83,9 +106,16 @@ export default function Contact() {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(personalInfo.phone.replace(/[^0-9+]/g, ''));
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2000);
+  };
+
   const handleReset = () => {
     setFormData({ name: '', email: '', subject: '', message: '' });
     setSubmitStatus(null);
+    setServerError(null);
     setErrors({});
   };
 
@@ -104,16 +134,56 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        {/* Balanced 50/50 Layout with equal-height left and right cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
           
-          {/* Left Column: Direct Contact Details & Links */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-slate-50/70 rounded-2xl p-6 sm:p-7 border border-slate-200/80">
-              <h3 className="text-lg font-bold text-slate-900 mb-5">
-                Contact Information
-              </h3>
+          {/* Left Column: Direct Contact Details & Quick Status */}
+          <div className="flex flex-col h-full bg-slate-50/70 rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-bold text-slate-900">
+                  Contact Information
+                </h3>
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Direct Reach
+                </span>
+              </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3.5">
+                {/* Phone */}
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200/60 shadow-xs">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        Phone / Contact
+                      </p>
+                      <a
+                        href={personalInfo.socialLinks.phone}
+                        className="text-xs sm:text-sm font-semibold text-slate-800 hover:text-emerald-600 transition-colors truncate block"
+                        title="Click to call"
+                      >
+                        {personalInfo.phoneDisplay || personalInfo.phone}
+                      </a>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleCopyPhone}
+                    className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer shrink-0 ml-2"
+                    title="Copy phone number"
+                    aria-label="Copy phone"
+                  >
+                    {copiedPhone ? (
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+
                 {/* Email with copy button */}
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200/60 shadow-xs">
                   <div className="flex items-center gap-3 min-w-0">
@@ -169,7 +239,7 @@ export default function Contact() {
                         LinkedIn
                       </p>
                       <p className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
-                        linkedin.com/in/aditya-pandey
+                        linkedin.com/in/adityapandey9977
                       </p>
                     </div>
                   </div>
@@ -191,7 +261,7 @@ export default function Contact() {
                         GitHub
                       </p>
                       <p className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-slate-900 transition-colors">
-                        github.com/adityapandey9977
+                        github.com/adityapandey9977-code
                       </p>
                     </div>
                   </div>
@@ -214,45 +284,48 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Quick Status banner */}
-            <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-xs text-blue-800 flex items-start gap-3">
-              <span className="w-2 h-2 rounded-full bg-blue-600 mt-1 shrink-0" />
-              <span>
-                Actively seeking Junior / Mid-Level MERN developer roles, internships, and collaborative software engineering projects.
+            {/* Quick Status banner placed cleanly at bottom of left card */}
+            <div className="mt-6 p-4 rounded-xl bg-blue-50/80 border border-blue-100 text-xs text-blue-800 flex items-start gap-3">
+              <span className="w-2 h-2 rounded-full bg-blue-600 mt-1 shrink-0 animate-pulse" />
+              <span className="leading-relaxed">
+                Actively seeking Full Stack Developer roles, MERN / Node.js opportunities, and collaborative engineering projects.
               </span>
             </div>
           </div>
 
           {/* Right Column: Contact Form */}
-          <div className="lg:col-span-7">
-            <div className="bg-slate-50/70 rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
-              {submitStatus === 'success' ? (
-                <div className="py-8 text-center space-y-4 animate-fadeIn">
-                  <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-
-                  <h3 className="text-xl font-bold text-slate-900">
-                    Message Sent Successfully!
-                  </h3>
-
-                  <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                    Thank you for reaching out, <span className="font-semibold text-slate-800">{formData.name}</span>. I'll get back to you as soon as possible at <span className="font-semibold text-slate-800">{formData.email}</span>.
-                  </p>
-
-                  <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 text-left max-w-md mx-auto">
-                    <strong>Note for recruiters & developers:</strong> Frontend validation simulated successfully. To wire this to an active email service, plug in EmailJS or Formspree API keys in <code className="bg-amber-100 px-1 py-0.5 rounded">src/components/Contact.jsx</code>.
-                  </div>
-
-                  <button
-                    onClick={handleReset}
-                    className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors cursor-pointer"
-                  >
-                    Send Another Message
-                  </button>
+          <div className="flex flex-col h-full bg-slate-50/70 rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm justify-between">
+            {submitStatus === 'success' ? (
+              <div className="py-8 my-auto text-center space-y-4 animate-fadeIn">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} noValidate className="space-y-4">
+
+                <h3 className="text-xl font-bold text-slate-900">
+                  Message Sent Successfully!
+                </h3>
+
+                <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                  Thank you for reaching out, <span className="font-semibold text-slate-800">{formData.name}</span>. Your message has been sent directly to my inbox at <span className="font-semibold text-slate-800">adityapandey9977@gmail.com</span>, and I will get back to you promptly at <span className="font-semibold text-slate-800">{formData.email}</span>.
+                </p>
+
+                <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200/80 text-xs text-emerald-800 text-left max-w-md mx-auto flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold">Delivered directly via Nodemailer:</span> All your contact details and message have been delivered to my personal email inbox.
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleReset}
+                  className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors cursor-pointer shadow-sm"
+                >
+                  Send Another Message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full justify-between space-y-4">
+                <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Name Field */}
                     <div>
@@ -370,8 +443,17 @@ export default function Contact() {
                       </p>
                     )}
                   </div>
+                </div>
 
-                  {/* Submit Button */}
+                {serverError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                    <span>{serverError}</span>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -389,9 +471,9 @@ export default function Contact() {
                       </>
                     )}
                   </button>
-                </form>
-              )}
-            </div>
+                </div>
+              </form>
+            )}
           </div>
 
         </div>

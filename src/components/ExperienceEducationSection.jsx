@@ -18,13 +18,13 @@ export default function ExperienceEducationSection() {
           </p>
         </div>
 
-        {/* 2-Column Responsive Layout for Desktop / Tablet; Stacked for Mobile */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-          <div className="lg:col-span-7">
+        {/* 2-Column Balanced 50/50 Layout with equal height alignment */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+          <div className="h-full">
             <Experience />
           </div>
 
-          <div className="lg:col-span-5">
+          <div className="h-full">
             <Education />
           </div>
         </div>

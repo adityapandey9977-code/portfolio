@@ -218,7 +218,87 @@ export default function TechIcon({ id, className = "w-8 h-8" }) {
         </svg>
       );
 
+    case 'typescript':
+      return (
+        <div className={`${className} bg-[#3178C6] text-white font-extrabold rounded-md flex items-end justify-end p-0.5 text-xs select-none shadow-sm`}>
+          <span className="leading-none pr-0.5 pb-0.5 font-sans font-bold">TS</span>
+        </div>
+      );
 
+    case 'redux':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="#764ABC" opacity="0.15"/>
+          <path d="M15.5 12C15.5 13.93 13.93 15.5 12 15.5C10.07 15.5 8.5 13.93 8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12Z" stroke="#764ABC" strokeWidth="2"/>
+          <path d="M12 6C7.5 6 4 10 4 12C4 14 7.5 18 12 18C16.5 18 20 14 20 12C20 10 16.5 6 12 6Z" stroke="#764ABC" strokeWidth="1.5" strokeDasharray="2 2"/>
+        </svg>
+      );
+
+    case 'axios':
+      return (
+        <div className={`${className} bg-[#5A29E4] text-white font-bold rounded-lg flex items-center justify-center text-[10px] select-none shadow-sm`}>
+          Ax
+        </div>
+      );
+
+    case 'redis':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="5" fill="#DC382D" />
+          <path d="M6 13L12 9L18 13L12 17L6 13Z" fill="white" />
+          <path d="M6 9L12 5L18 9L12 13L6 9Z" fill="white" opacity="0.6" />
+        </svg>
+      );
+
+    case 'rabbitmq':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="5" fill="#FF6600" />
+          <circle cx="9" cy="11" r="1.5" fill="white" />
+          <circle cx="15" cy="11" r="1.5" fill="white" />
+          <path d="M8 15C10 17 14 17 16 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+
+    case 'clickup':
+      return (
+        <div className={`${className} bg-gradient-to-tr from-[#7B68EE] to-[#FF005F] text-white font-black rounded-lg flex items-center justify-center text-xs select-none shadow-sm`}>
+          ✓
+        </div>
+      );
+
+    case 'mongoose':
+      return (
+        <div className={`${className} bg-[#880000] text-white font-bold rounded-lg flex items-center justify-center text-[10px] select-none shadow-sm`}>
+          m
+        </div>
+      );
+
+    case 'rbac':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="#8B5CF6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      );
+
+    case 'nodemailer':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="#22B3EB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect width="20" height="16" x="2" y="4" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+      );
+
+    case 'oauth':
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+        </svg>
+      );
 
     default:
       return (
